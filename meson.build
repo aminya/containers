@@ -6,9 +6,6 @@ project('dcontainers', 'd',
 
 project_soversion = '0'
 
-pkgc = import('pkgconfig')
-allocator_dep = dependency('stdx-allocator', version: '>= 2.77', fallback: ['stdx-allocator', 'allocator_dep'])
-
 #
 # Sources
 #
@@ -44,13 +41,12 @@ dcontainers_lib = static_library('dcontainers',
         install: true,
         version: meson.project_version(),
         soversion: project_soversion,
-        dependencies: [allocator_dep]
 )
 
+pkgc = import('pkgconfig')
 pkgc.generate(name: 'dcontainers',
               libraries: [dcontainers_lib],
               subdirs: 'd/containers',
-              requires: ['stdx-allocator'],
               version: meson.project_version(),
               description: 'Containers backed by std.experimental.allocator.'
 )
@@ -59,7 +55,6 @@ pkgc.generate(name: 'dcontainers',
 dcontainers_dep = declare_dependency(
     link_with: [dcontainers_lib],
     include_directories: [src_dir],
-    dependencies: [allocator_dep]
 )
 
 #
@@ -72,7 +67,6 @@ dcontainers_test_exe = executable('test_dcontainers',
     'test/compile_test.d',
     'test/external_allocator_test.d'],
     include_directories: [src_dir],
-    dependencies: [allocator_dep],
     d_unittest: true,
     link_args: extra_args
 )
